@@ -40,7 +40,12 @@ public class AddressBookMain {
 			contact.email = in.nextLine();
 			System.out.print("Enter zip: ");
 			contact.zip = in.nextLong();
+			in.nextLine();
 		}
+		System.out.print("Enter the contact first to delete: ");
+		searchName = in.nextLine();
+		if(searchName.equals(contact.firstName))
+			contact = null;
 		in.close();
 	}
 }
