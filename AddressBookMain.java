@@ -3,7 +3,7 @@ import java.util.stream.*;
 
 
 public class AddressBookMain {
-	public static HashMap<String,AddressBook> addressBookMap = new HashMap<String,AddressBook>();
+	public static HashMap<String, AddressBook> addressBookMap = new HashMap<String, AddressBook>();
 	public static HashMap<String, ArrayList<String>> cityPersonMap = new HashMap<String, ArrayList<String>>();
 	public static HashMap<String, ArrayList<String>> statePersonMap = new HashMap<String, ArrayList<String>>();
 	public static void main(String args[]){
@@ -15,7 +15,8 @@ public class AddressBookMain {
 			System.out.println("2. Edit Contact");
 			System.out.println("3. Delete Contact");
 			System.out.println("4. Search Persons By City or State");
-			System.out.println("5. Exit");
+			System.out.println("5. Get Total Persons Count By City or State");
+			System.out.println("6. Exit");
 			System.out.print("Enter your choice: ");
 			choice = in.nextInt();
 			in.nextLine();
@@ -39,9 +40,14 @@ public class AddressBookMain {
 				case 4:
 				{
 					viewPersonsByCityOrState(in);
+					break;
+				}
+				case 5:
+				{
+					getCountOfPersonsByCityOrState(in);
 				}
 			}
-		}while(choice!=5);
+		}while(choice!=6);
 		System.out.println("Program Terminated");
 		in.close();
 	}
@@ -220,5 +226,44 @@ public class AddressBookMain {
 	private static void deleteTimeUpdateMaps(String city, String state, String firstName) {
 		updateMaps(city, firstName, cityPersonMap, 2); //delete firstName from cityPersonMap
 		updateMaps(state, firstName, statePersonMap, 2); //delete firstName from statePersonMap
+	}
+	
+	/**
+	 * @param in
+	 * Displays total number of contacts in a city or state
+	 */
+	private static void getCountOfPersonsByCityOrState(Scanner in) {
+		System.out.println("1. City \n"
+						+ "2. State");
+		System.out.print("Enter your choice (1/2): ");
+		int choice = in.nextInt();
+		in.nextLine();
+		switch(choice)
+		{
+			case 1:
+			{
+				System.out.print("Enter city name: ");
+				String cityName = in.nextLine();
+				try {
+					System.out.println("Total count: " +
+							cityPersonMap.entrySet().stream().filter(e -> e.getKey().equals(cityName)).findFirst().get().getValue().size());
+				} catch (NoSuchElementException e) {
+					System.out.println("Total count: 0");
+				}
+				break;
+			}
+			case 2:
+			{
+				System.out.print("Enter state name: ");
+				String stateName = in.nextLine();
+				try {
+					System.out.println("Total count: " + 
+							statePersonMap.entrySet().stream().filter(e -> e.getKey().equals(stateName)).findFirst().get().getValue().size());
+				} catch (NoSuchElementException e) {
+					System.out.println("Total count: 0");
+				}
+				break;
+			}
+		}
 	}
 }
