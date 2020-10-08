@@ -12,7 +12,8 @@ public class AddressBookMain {
 			System.out.println("1. Add Contact");
 			System.out.println("2. Edit Contact");
 			System.out.println("3. Delete Contact");
-			System.out.println("4. Exit");
+			System.out.println("4. Search Persons By City or State");
+			System.out.println("5. Exit");
 			System.out.print("Enter your choice: ");
 			choice = in.nextInt();
 			in.nextLine();
@@ -31,9 +32,14 @@ public class AddressBookMain {
 				case 3:
 				{
 					deleteAddressBook(in);
+					break;
+				}
+				case 4:
+				{
+					viewPersonsByCityOrState(in);
 				}
 			}
-		}while(choice!=4);
+		}while(choice!=5);
 		System.out.println("Program Terminated");
 		in.close();
 	}
@@ -117,6 +123,11 @@ public class AddressBookMain {
 			System.out.println("Contact not found");
 	}
 	
+	/**
+	 * @param firstName
+	 * @return
+	 * Checks for duplicates while adding new contact
+	 */
 	private static boolean mapHasDuplicates(String firstName) {
 		try {
 			if(firstName == addressBookMap.entrySet().stream().filter(e -> e.getKey().equals(firstName)).findFirst().get().getKey());
@@ -126,6 +137,34 @@ public class AddressBookMain {
 			}
 		} catch (NoSuchElementException e) {
 			return false;
+		}
+	}
+	
+	/**
+	 * @param in
+	 * Prints people in the corresponding city or state
+	 */
+	private static void viewPersonsByCityOrState(Scanner in) {
+		System.out.println("1. City \n"
+							+ "2. State");
+		System.out.print("Enter your choice: ");
+		int choice = in.nextInt();
+		in.nextLine();
+		switch(choice)
+		{
+			case 1:
+				{
+					System.out.print("Enter city: ");
+					String city = in.nextLine();
+					addressBookMap.entrySet().stream().filter(e -> e.getValue().getCity().equals(city)).forEach(e -> System.out.println(e.getKey()));
+					break;
+				}
+			case 2:
+				{
+					System.out.print("Enter state: ");
+					String state = in.nextLine();
+					addressBookMap.entrySet().stream().filter(e -> e.getValue().getState().equals(state)).forEach(e -> System.out.println(e.getKey()));
+				}
 		}
 	}
 }
