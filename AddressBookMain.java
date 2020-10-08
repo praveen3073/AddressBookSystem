@@ -4,6 +4,8 @@ import java.util.stream.*;
 
 public class AddressBookMain {
 	public static HashMap<String,AddressBook> addressBookMap = new HashMap<String,AddressBook>();
+	public static HashMap<String, ArrayList<String>> cityPersonMap = new HashMap<String, ArrayList<String>>();
+	public static HashMap<String, ArrayList<String>> statePersonMap = new HashMap<String, ArrayList<String>>();
 	public static void main(String args[]){
 		Scanner in = new Scanner(System.in);
 		int choice = 0;
@@ -70,6 +72,7 @@ public class AddressBookMain {
 		contact.zip = in.nextLong();
 		in.nextLine();
 		addressBookMap.put(contact.firstName,contact);
+		insertTimeUpdateMaps(contact.city, contact.state, contact.firstName);
 	}
 	
 	/**
@@ -101,6 +104,7 @@ public class AddressBookMain {
 			in.nextLine();
 			addressBookMap.remove(searchName);
 			addressBookMap.put(contact.firstName,contact);
+			editTimeUpdateMaps(contact.city, contact.state, searchName, contact.firstName);
 			System.out.println("Contact modified");
 		}
 		else
@@ -117,6 +121,7 @@ public class AddressBookMain {
 		if(addressBookMap.containsKey(searchName))
 		{
 			addressBookMap.remove(searchName);
+			deleteTimeUpdateMaps(addressBookMap.get(searchName).getCity(), addressBookMap.get(searchName).getState(), searchName);
 			System.out.println("Contact deleted successfully");
 		}
 		else
@@ -156,15 +161,64 @@ public class AddressBookMain {
 				{
 					System.out.print("Enter city: ");
 					String city = in.nextLine();
-					addressBookMap.entrySet().stream().filter(e -> e.getValue().getCity().equals(city)).forEach(e -> System.out.println(e.getKey()));
+					cityPersonMap.entrySet().stream().filter(e -> e.getKey().equals(city)).forEach(e -> System.out.println(e.getValue()));
 					break;
 				}
 			case 2:
 				{
 					System.out.print("Enter state: ");
 					String state = in.nextLine();
-					addressBookMap.entrySet().stream().filter(e -> e.getValue().getState().equals(state)).forEach(e -> System.out.println(e.getKey()));
+					statePersonMap.entrySet().stream().filter(e -> e.getKey().equals(state)).forEach(e -> System.out.println(e.getValue()));
 				}
 		}
+	}
+	
+	/**
+	 * @param locality
+	 * @param contactFirstName
+	 * @param map
+	 * @param actionChoice
+	 * Updates cityPersonMap and statePersonMap
+	 */
+	private static void updateMaps(String locality, String contactFirstName, HashMap<String, ArrayList<String>> map, int actionChoice) {
+		
+		switch(actionChoice)
+		{
+			//Add
+			case 1:
+			{
+				ArrayList<String> firstNameList;
+				if(map.containsKey(locality))
+					firstNameList = map.get(locality);
+				else
+					firstNameList = new ArrayList<String>();
+				firstNameList.add(contactFirstName);
+				map.put(locality, firstNameList);
+				break;
+			}
+			//Remove
+			case 2:
+			{
+				ArrayList<String> firstNameList = map.get(locality);
+				firstNameList.remove(contactFirstName);
+			}
+		}
+	}
+	
+	private static void insertTimeUpdateMaps(String city, String state, String firstName) {
+		updateMaps(city, firstName, cityPersonMap, 1); //add new firstName to cityPersonMap
+		updateMaps(state, firstName, statePersonMap, 1); //add new firstName to statePersonMap
+	}
+	
+	private static void editTimeUpdateMaps(String city, String state, String olderFirstName, String currentFirstName) {
+		updateMaps(city, olderFirstName, cityPersonMap, 2); //remove old firstName from cityPersonMap
+		updateMaps(city, currentFirstName, cityPersonMap, 1); //add new firstName to cityPersonMap
+		updateMaps(state, olderFirstName, statePersonMap, 2); //remove old firstName from statePersonMap
+		updateMaps(state, currentFirstName, statePersonMap, 1); //add new firstName to statePersonMap
+	}
+	
+	private static void deleteTimeUpdateMaps(String city, String state, String firstName) {
+		updateMaps(city, firstName, cityPersonMap, 2); //delete firstName from cityPersonMap
+		updateMaps(state, firstName, statePersonMap, 2); //delete firstName from statePersonMap
 	}
 }
