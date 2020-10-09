@@ -60,25 +60,25 @@ public class AddressBookMain {
 		AddressBook contact = new AddressBook();
 		do {
 			System.out.print("Enter first name: ");
-			contact.firstName = in.nextLine();
-		} while(mapHasDuplicates(contact.firstName) == true);
+			contact.setFirstName(in.nextLine());
+		} while(mapHasDuplicates(contact) == true);
 		System.out.print("Enter last name: ");
-		contact.lastName = in.nextLine();
+		contact.setLastName(in.nextLine());
 		System.out.print("Enter address: ");
-		contact.address = in.nextLine();
+		contact.setAddress(in.nextLine());
 		System.out.print("Enter city: ");
-		contact.city = in.nextLine();
+		contact.setCity(in.nextLine());
 		System.out.print("Enter state: ");
-		contact.state = in.nextLine();
+		contact.setState(in.nextLine());
 		System.out.print("Enter phoneNumber: ");
-		contact.phoneNumber = in.nextLine();
+		contact.setPhoneNumber(in.nextLine());
 		System.out.print("Enter email: ");
-		contact.email = in.nextLine();
+		contact.setEmail(in.nextLine());
 		System.out.print("Enter zip: ");
-		contact.zip = in.nextLong();
+		contact.setZip(in.nextLong());
 		in.nextLine();
-		addressBookMap.put(contact.firstName,contact);
-		insertTimeUpdateMaps(contact.city, contact.state, contact.firstName);
+		addressBookMap.put(contact.getFirstName(),contact);
+		insertTimeUpdateMaps(contact.getCity(), contact.getState(), contact.getFirstName());
 	}
 	
 	/**
@@ -92,25 +92,25 @@ public class AddressBookMain {
 		{
 			AddressBook contact = new AddressBook();
 			System.out.print("Enter first name: ");
-			contact.firstName = in.nextLine();
+			contact.setFirstName(in.nextLine());
 			System.out.print("Enter last name: ");
-			contact.lastName = in.nextLine();
+			contact.setLastName(in.nextLine());
 			System.out.print("Enter address: ");
-			contact.address = in.nextLine();
+			contact.setAddress(in.nextLine());
 			System.out.print("Enter city: ");
-			contact.city = in.nextLine();
+			contact.setCity(in.nextLine());
 			System.out.print("Enter state: ");
-			contact.state = in.nextLine();
+			contact.setState(in.nextLine());
 			System.out.print("Enter phoneNumber: ");
-			contact.phoneNumber = in.nextLine();
+			contact.setPhoneNumber(in.nextLine());
 			System.out.print("Enter email: ");
-			contact.email = in.nextLine();
+			contact.setEmail(in.nextLine());
 			System.out.print("Enter zip: ");
-			contact.zip = in.nextLong();
+			contact.setZip(in.nextLong());
 			in.nextLine();
 			addressBookMap.remove(searchName);
-			addressBookMap.put(contact.firstName,contact);
-			editTimeUpdateMaps(contact.city, contact.state, searchName, contact.firstName);
+			addressBookMap.put(contact.getFirstName(),contact);
+			editTimeUpdateMaps(contact.getCity(), contact.getState(), searchName, contact.getFirstName());
 			System.out.println("Contact modified");
 		}
 		else
@@ -139,11 +139,11 @@ public class AddressBookMain {
 	 * @return
 	 * Checks for duplicates while adding new contact
 	 */
-	private static boolean mapHasDuplicates(String firstName) {
+	private static boolean mapHasDuplicates(AddressBook contact) {
 		try {
-			if(firstName == addressBookMap.entrySet().stream().filter(e -> e.getKey().equals(firstName)).findFirst().get().getKey());
+			if(contact.equals(addressBookMap.entrySet().stream().filter(e -> contact.equals(e.getKey())).findFirst().get().getKey()));
 			{
-				System.out.println("Contact matching " + firstName + " already exists");
+				System.out.println("Contact matching " + contact.getFirstName() + " already exists");
 				return true;
 			}
 		} catch (NoSuchElementException e) {

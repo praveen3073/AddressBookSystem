@@ -1,8 +1,9 @@
 
 public class AddressBook {
-	String firstName;
-	String lastName;
-	String address, city, state, phoneNumber,email;
+	private String firstName;
+	private String lastName;
+	private String address, city, state, phoneNumber,email;
+	private long zip;
 	public String getFirstName() {
 		return firstName;
 	}
@@ -51,5 +52,12 @@ public class AddressBook {
 	public void setZip(long zip) {
 		this.zip = zip;
 	}
-	long zip;
+	
+	@Override
+	public boolean equals(Object ob) {
+		String firstName = (String) ob;
+		if(firstName.equalsIgnoreCase(this.firstName))
+			return true;
+		return false;
+	}
 }
