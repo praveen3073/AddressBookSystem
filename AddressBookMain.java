@@ -3,65 +3,89 @@ import java.util.stream.*;
 
 
 public class AddressBookMain {
+	public static Scanner in = new Scanner(System.in);
 	public static HashMap<String, AddressBook> addressBookMap = new HashMap<String, AddressBook>();
 	public static HashMap<String, ArrayList<String>> cityPersonMap = new HashMap<String, ArrayList<String>>();
 	public static HashMap<String, ArrayList<String>> statePersonMap = new HashMap<String, ArrayList<String>>();
+	
 	public static void main(String args[]){
-		Scanner in = new Scanner(System.in);
+		menuDrivenEntry();
+		System.out.println("-----Program Terminated-----");
+		in.close();
+	}
+	
+	private static void menuDrivenEntry() {
 		int choice = 0;
 		do
 		{
-			System.out.println("1. Add Contact");
-			System.out.println("2. Edit Contact");
-			System.out.println("3. Delete Contact");
-			System.out.println("4. Search Persons By City or State");
-			System.out.println("5. Get Total Persons Count By City or State");
-			System.out.println("6. Exit");
+			System.out.println("1. Add Address Book");
+			System.out.println("2. Add Contact");
+			System.out.println("3. Edit Contact");
+			System.out.println("4. Delete Contact");
+			System.out.println("5. Search Persons By City or State");
+			System.out.println("6. Get Total Persons Count By City or State");
+			System.out.println("7. Exit");
 			System.out.print("Enter your choice: ");
 			choice = in.nextInt();
 			in.nextLine();
 			switch(choice)
 			{
-			case 1:
+				case 1:
 				{
-					addAddressBook(in);
+					addAddressBook();
 					break;
 				}
 				case 2:
 				{
-					editAddressBook(in);
+					addContactToAddressBook();
 					break;
 				}
 				case 3:
 				{
-					deleteAddressBook(in);
+					editAddressBook();
 					break;
 				}
 				case 4:
 				{
-					viewPersonsByCityOrState(in);
+					deleteAddressBook();
 					break;
 				}
 				case 5:
 				{
-					getCountOfPersonsByCityOrState(in);
+					viewPersonsByCityOrState();
+					break;
+				}
+				case 6:
+				{
+					getCountOfPersonsByCityOrState();
 				}
 			}
-		}while(choice!=6);
-		System.out.println("Program Terminated");
-		in.close();
+		}while(choice!=7);
 	}
 	
-	/**
-	 * @param in
-	 * Adds a contact to the dictionary
-	 */
-	private static void addAddressBook(Scanner in) {
-		AddressBook contact = new AddressBook();
-		do {
-			System.out.print("Enter first name: ");
-			contact.setFirstName(in.nextLine());
-		} while(mapHasDuplicates(contact) == true);
+	private static void addAddressBook() {
+		System.out.print("Enter name for new address book: ");
+		String addressBookName = in.nextLine();
+		AddressBook addressBookObject = new AddressBook();
+		addressBookMap.put(addressBookName, addressBookObject);
+	}
+	
+	private static String getAddressBookNameForEntry() {
+		System.out.print("Enter Address Book Name: ");
+		return in.nextLine();
+	}
+	
+	private static boolean isAddressBookExist(String addressBookName) {
+		if(addressBookMap.containsKey(addressBookName))
+			return true;
+		System.out.println("Address book does not exist");
+		return false;
+	}
+	
+	private static Contact getContactDetails() {
+		Contact contact = new Contact();
+		System.out.print("Enter first name: ");
+		contact.setFirstName(in.nextLine());
 		System.out.print("Enter last name: ");
 		contact.setLastName(in.nextLine());
 		System.out.print("Enter address: ");
@@ -77,7 +101,25 @@ public class AddressBookMain {
 		System.out.print("Enter zip: ");
 		contact.setZip(in.nextLong());
 		in.nextLine();
-		addressBookMap.put(contact.getFirstName(),contact);
+		return contact;
+	}
+	
+	/**
+	 * @param in
+	 * Adds a contact to the dictionary
+	 */
+	private static void addContactToAddressBook() {
+		String addressBookName = getAddressBookNameForEntry();
+		if(isAddressBookExist(addressBookName) == false)
+			return;
+		AddressBook addressBookObject = addressBookMap.get(addressBookName);
+		ArrayList<Contact> contactList = addressBookObject.getContactList();
+		Contact contact = getContactDetails();
+		if(addressBookHasContact(contactList, contact) == true)
+			return;
+		contactList.add(contact);
+		addressBookObject.setContactList(contactList);
+		addressBookMap.put(addressBookName, addressBookObject);
 		insertTimeUpdateMaps(contact.getCity(), contact.getState(), contact.getFirstName());
 	}
 	
@@ -85,53 +127,52 @@ public class AddressBookMain {
 	 * @param in
 	 * Edit a contact in dictionary
 	 */
-	private static void editAddressBook(Scanner in) {
+	private static void editAddressBook() {
+		String addressBookName = getAddressBookNameForEntry();
+		if(isAddressBookExist(addressBookName) == false)
+			return;
+		AddressBook addressBookObject = addressBookMap.get(addressBookName);
+		ArrayList<Contact> contactList = addressBookObject.getContactList();
 		System.out.print("Enter the contact first name to edit: ");
-		String searchName = in.nextLine();
-		if(addressBookMap.containsKey(searchName))
+		String contactFirstName = in.nextLine();
+		for(Contact contactInList : contactList)
 		{
-			AddressBook contact = new AddressBook();
-			System.out.print("Enter first name: ");
-			contact.setFirstName(in.nextLine());
-			System.out.print("Enter last name: ");
-			contact.setLastName(in.nextLine());
-			System.out.print("Enter address: ");
-			contact.setAddress(in.nextLine());
-			System.out.print("Enter city: ");
-			contact.setCity(in.nextLine());
-			System.out.print("Enter state: ");
-			contact.setState(in.nextLine());
-			System.out.print("Enter phoneNumber: ");
-			contact.setPhoneNumber(in.nextLine());
-			System.out.print("Enter email: ");
-			contact.setEmail(in.nextLine());
-			System.out.print("Enter zip: ");
-			contact.setZip(in.nextLong());
-			in.nextLine();
-			addressBookMap.remove(searchName);
-			addressBookMap.put(contact.getFirstName(),contact);
-			editTimeUpdateMaps(contact.getCity(), contact.getState(), searchName, contact.getFirstName());
-			System.out.println("Contact modified");
+			if(contactInList.getFirstName().equals(contactFirstName))
+			{
+				Contact contact = getContactDetails();
+				contactList.set(contactList.indexOf(contactInList), contact);
+				addressBookObject.setContactList(contactList);
+				addressBookMap.put(addressBookName, addressBookObject);
+				editTimeUpdateMaps(contact.getCity(), contact.getState(), contactFirstName, contact.getFirstName());
+				System.out.println("Contact modified");
+				return;
+			}
 		}
-		else
-			System.out.println("Contact not found");
+		System.out.println("Contact not found");
 	}
 	
 	/**
 	 * @param in
 	 * Delete a contact in dictionary
 	 */
-	private static void deleteAddressBook(Scanner in) {
+	private static void deleteAddressBook() {
+		String addressBookName = getAddressBookNameForEntry();
+		if(isAddressBookExist(addressBookName) == false)
+			return;
+		AddressBook addressBookObject = addressBookMap.get(addressBookName);
+		ArrayList<Contact> contactList = addressBookObject.getContactList();
 		System.out.print("Enter the contact first name to delete: ");
-		String searchName = in.nextLine();
-		if(addressBookMap.containsKey(searchName))
-		{
-			addressBookMap.remove(searchName);
-			deleteTimeUpdateMaps(addressBookMap.get(searchName).getCity(), addressBookMap.get(searchName).getState(), searchName);
+		String contactFirstName = in.nextLine();
+		try{
+			Contact contact = contactList.stream().filter(e -> e.getFirstName().equals(contactFirstName)).findFirst().get();
+			contactList.remove(contact);
+			addressBookObject.setContactList(contactList);
+			addressBookMap.put(addressBookName, addressBookObject);
+			deleteTimeUpdateMaps(contact.getCity(), contact.getState(), contactFirstName);
 			System.out.println("Contact deleted successfully");
-		}
-		else
+		} catch(NoSuchElementException e) {
 			System.out.println("Contact not found");
+		}
 	}
 	
 	/**
@@ -139,23 +180,24 @@ public class AddressBookMain {
 	 * @return
 	 * Checks for duplicates while adding new contact
 	 */
-	private static boolean mapHasDuplicates(AddressBook contact) {
+	private static boolean addressBookHasContact(ArrayList<Contact> contactList, Contact contact) {
 		try {
-			if(contact.equals(addressBookMap.entrySet().stream().filter(e -> contact.equals(e.getKey())).findFirst().get().getKey()));
+			if(contact.equals(contactList.stream().filter(e -> e.equals(contact)).findFirst().get()))
 			{
 				System.out.println("Contact matching " + contact.getFirstName() + " already exists");
 				return true;
 			}
-		} catch (NoSuchElementException e) {
+		} catch(NoSuchElementException e) {
 			return false;
 		}
+		return false;
 	}
 	
 	/**
 	 * @param in
 	 * Prints people in the corresponding city or state
 	 */
-	private static void viewPersonsByCityOrState(Scanner in) {
+	private static void viewPersonsByCityOrState() {
 		System.out.println("1. City \n"
 							+ "2. State");
 		System.out.print("Enter your choice: ");
@@ -185,6 +227,7 @@ public class AddressBookMain {
 	 * @param map
 	 * @param actionChoice
 	 * Updates cityPersonMap and statePersonMap
+	 * actionChoice: 1 = add,  2 = remove  
 	 */
 	private static void updateMaps(String locality, String contactFirstName, HashMap<String, ArrayList<String>> map, int actionChoice) {
 		
@@ -207,6 +250,10 @@ public class AddressBookMain {
 			{
 				ArrayList<String> firstNameList = map.get(locality);
 				firstNameList.remove(contactFirstName);
+				if(firstNameList.isEmpty())
+					map.remove(locality);
+				else
+					map.put(locality, firstNameList);
 			}
 		}
 	}
@@ -232,7 +279,7 @@ public class AddressBookMain {
 	 * @param in
 	 * Displays total number of contacts in a city or state
 	 */
-	private static void getCountOfPersonsByCityOrState(Scanner in) {
+	private static void getCountOfPersonsByCityOrState() {
 		System.out.println("1. City \n"
 						+ "2. State");
 		System.out.print("Enter your choice (1/2): ");
