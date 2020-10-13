@@ -19,4 +19,12 @@ public class AddressBook {
 	public void setContactList(ArrayList<Contact> contactList) {
 		this.contactList = contactList;
 	}
+	public void sortContactListByFirstNameAsc() {
+		Comparator<Contact> contactComparator = (contact1, contact2) -> contact1.getFirstName().compareTo(contact2.getFirstName());
+		Collections.sort(contactList, contactComparator);
+	}
+	public void sortContactListByFirstNameDesc() {
+		Comparator<Contact> contactComparator = (contact1, contact2) -> contact2.getFirstName().compareTo(contact1.getFirstName());
+		Collections.sort(contactList, contactComparator);
+	}
 }

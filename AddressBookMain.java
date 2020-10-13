@@ -24,7 +24,8 @@ public class AddressBookMain {
 			System.out.println("4. Delete Contact");
 			System.out.println("5. Search Persons By City or State");
 			System.out.println("6. Get Total Persons Count By City or State");
-			System.out.println("7. Exit");
+			System.out.println("7. Sort Contacts in Address Book");
+			System.out.println("8. Exit");
 			System.out.print("Enter your choice: ");
 			choice = in.nextInt();
 			in.nextLine();
@@ -58,9 +59,14 @@ public class AddressBookMain {
 				case 6:
 				{
 					getCountOfPersonsByCityOrState();
+					break;
+				}
+				case 7:
+				{
+					sortContacts();
 				}
 			}
-		}while(choice!=7);
+		}while(choice!=8);
 	}
 	
 	private static void addAddressBook() {
@@ -312,5 +318,31 @@ public class AddressBookMain {
 				break;
 			}
 		}
+	}
+	
+	private static void sortContacts() {
+		String addressBookName = getAddressBookNameForEntry();
+		if(isAddressBookExist(addressBookName) == false)
+			return;
+		AddressBook addressBookObject = addressBookMap.get(addressBookName);
+		System.out.println("Sort contacts using first name by \n"
+							+ "1.Ascending \n"
+							+ "2.Descending");
+		System.out.print("Enter your choice (1/2): ");
+		int choice = in.nextInt();
+		in.nextLine();
+		switch(choice)
+		{
+			case 1:
+				addressBookObject.sortContactListByFirstNameAsc();
+				break;
+			case 2:
+				addressBookObject.sortContactListByFirstNameDesc();
+				break;
+			default:
+				System.out.println("Invalid Input");	
+		}
+		System.out.println("Contact list after sorting: ");
+		addressBookObject.getContactList().stream().forEach(e -> System.out.println(e.toString()));
 	}
 }

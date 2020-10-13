@@ -60,4 +60,16 @@ public class Contact {
 			return true;
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return "First Name: " + firstName +
+				", Last Name: " + lastName +
+				", Address: " + address +
+				", City: " + city +
+				", State: " + state +
+				", Phone number: " + phoneNumber +
+				", Email: " + email +
+				", Zip: " + zip;
+	}
 }
