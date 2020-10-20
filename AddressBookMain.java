@@ -1,5 +1,9 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.*;
-import java.util.stream.*;
 
 
 public class AddressBookMain {
@@ -25,7 +29,9 @@ public class AddressBookMain {
 			System.out.println("5. Search Persons By City or State");
 			System.out.println("6. Get Total Persons Count By City or State");
 			System.out.println("7. Sort Contacts in Address Book");
-			System.out.println("8. Exit");
+			System.out.println("8. Write Address Book To File");
+			System.out.println("9. Read Address Book From File");
+			System.out.println("10. Exit");
 			System.out.print("Enter your choice: ");
 			choice = in.nextInt();
 			in.nextLine();
@@ -64,9 +70,19 @@ public class AddressBookMain {
 				case 7:
 				{
 					sortContacts();
+					break;
+				}
+				case 8:
+				{
+					writeAddressBookToFile();
+					break;
+				}
+				case 9:
+				{
+					readAddressBookFromFile();
 				}
 			}
-		}while(choice!=8);
+		}while(choice!=10);
 	}
 	
 	private static void addAddressBook() {
@@ -382,5 +398,49 @@ public class AddressBookMain {
 		}
 		System.out.println("Contact list after sorting: ");
 		addressBookObject.getContactList().stream().forEach(e -> System.out.println(e.toString()));
+	}
+	
+	/**
+	 * Adds an existing address book to the file
+	 * File holds one address book at a time
+	 */
+	private static void writeAddressBookToFile() {
+		String addressBookName = getAddressBookNameForEntry();
+		if(isAddressBookExist(addressBookName) == false)
+			return;
+		AddressBook addressBook = addressBookMap.get(addressBookName);
+		String filename = "C:\\Users\\Praveen Satya\\eclipse-workspace\\AddressBookSystem\\src\\AddressBookFile.ser"; 
+        try
+        {    
+            FileOutputStream file = new FileOutputStream(filename); 
+            ObjectOutputStream out = new ObjectOutputStream(file); 
+            out.writeObject(addressBook); 
+            out.close(); 
+            file.close(); 
+            System.out.println("The address book has been written to file"); 
+        } catch(IOException ex) { 
+            System.out.println("IOException is caught");
+        } 
+	}
+	
+	private static void readAddressBookFromFile() {
+		String addressBookName = getAddressBookNameForEntry();
+		String filename = "C:\\Users\\Praveen Satya\\eclipse-workspace\\AddressBookSystem\\src\\AddressBookFile.ser"; 
+        try
+        {    
+            FileInputStream file = new FileInputStream(filename); 
+            ObjectInputStream in = new ObjectInputStream(file); 
+            AddressBook addressBook = (AddressBook)in.readObject(); System.out.println(addressBook.getAddressBookName());
+            /*if(!addressBookName.equals(addressBook.getAddressBookName()))
+            	System.out.println("Address book '" + addressBookName + "' not found in file");
+            else */
+                System.out.println("The address book has been read from file");
+            in.close(); 
+            file.close();
+        } catch(IOException ex) { 
+            System.out.println("IOException is caught"); 
+        } catch(ClassNotFoundException ex) { 
+            System.out.println("ClassNotFoundException is caught"); 
+        } 
 	}
 }
