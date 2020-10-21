@@ -89,6 +89,7 @@ public class AddressBookMain {
 		System.out.print("Enter name for new address book: ");
 		String addressBookName = in.nextLine();
 		AddressBook addressBookObject = new AddressBook();
+		addressBookObject.setAddressBookName(addressBookName);
 		addressBookMap.put(addressBookName, addressBookObject);
 	}
 	
@@ -430,10 +431,10 @@ public class AddressBookMain {
         {    
             FileInputStream file = new FileInputStream(filename); 
             ObjectInputStream in = new ObjectInputStream(file); 
-            AddressBook addressBook = (AddressBook)in.readObject(); System.out.println(addressBook.getAddressBookName());
-            /*if(!addressBookName.equals(addressBook.getAddressBookName()))
+            AddressBook addressBook = (AddressBook)in.readObject(); 
+            if(!addressBookName.equals(addressBook.getAddressBookName()))
             	System.out.println("Address book '" + addressBookName + "' not found in file");
-            else */
+            else 
                 System.out.println("The address book has been read from file");
             in.close(); 
             file.close();
