@@ -88,4 +88,17 @@ public class Contact implements java.io.Serializable{
 				", Zip: " + zip +
 				", Type: " + type;
 	}
+	
+	public boolean equalsObject(Contact contact) {
+		return this.contact_id == contact.contact_id &&
+			this.firstName.equals(contact.firstName) && 
+			this.lastName.equals(contact.lastName) &&
+			this.phoneNumber.equals(contact.phoneNumber) &&
+			this.email.equals(contact.email) &&
+			this.address.equals(contact.address) && 
+			this.city.equals(contact.city) &&
+			this.state.equals(contact.state) &&
+			this.zip == contact.zip &&
+			this.type.equals(contact.type);
+	}
 }
