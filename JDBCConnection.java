@@ -16,7 +16,7 @@ public class JDBCConnection {
 		}
 	}
 	
-	public Connection getConnection() {
+	public synchronized Connection getConnection() {
 		return connection;
 	}
 	
