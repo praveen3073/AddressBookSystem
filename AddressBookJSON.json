@@ -1,15 +1,14 @@
 {
-  "addressBookName": "ab",
+  "addressBookName": "",
   "contactList": [
     {
-      "firstName": "asd",
-      "lastName": "asd",
-      "address": "asd",
-      "city": "as",
-      "state": "asd",
-      "phoneNumber": "asd",
-      "email": "asd",
-      "zip": 345555
+      "contact_id": 1,
+      "ab_id": 1,
+      "firstName": "Kanishk",
+      "lastName": "Mathur",
+      "phoneNumber": "2222221232",
+      "zip": 0,
+      "type": []
     }
   ]
 }

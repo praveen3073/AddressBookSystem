@@ -23,6 +23,15 @@ public class Contact implements java.io.Serializable{
 		this.zip = zip;
 		this.type = type;
 	}
+	
+	public Contact(int contact_id, int ab_id, String firstName, String lastName, String phoneNumber) {
+		this.contact_id = contact_id;
+		this.ab_id = ab_id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phoneNumber = phoneNumber;
+		type = new ArrayList<String>();
+	}
 
 	public Contact() {
 		type = new ArrayList<String>();
