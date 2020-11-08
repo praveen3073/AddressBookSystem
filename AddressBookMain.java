@@ -659,7 +659,7 @@ public class AddressBookMain {
 	public boolean isContactAdditionSuccess(String ab_name, int contact_id, int ab_id, String firstName, String lastName, String phoneNumber) {
 		AddressBook addressBookObject = new AddressBook();
 		ArrayList<Contact> contactList = new ArrayList<>();
-		Contact contact = new Contact(contact_id, ab_id, firstName, lastName, phoneNumber);
+		Contact contact = new Contact(contact_id, ab_id, ab_name, firstName, lastName, phoneNumber);
 		contactList.add(contact);
 		addressBookObject.setContactList(contactList);
 		addressBookMap.put(ab_name, addressBookObject);
@@ -673,7 +673,7 @@ public class AddressBookMain {
 		{
 			if(contactInList.getFirstName().equals(first_name))
 			{
-				Contact contact = new Contact(contact_id, ab_id, newFirstName, lastName, phoneNumber);
+				Contact contact = new Contact(contact_id, ab_id, ab_name, newFirstName, lastName, phoneNumber);
 				contactList.set(contactList.indexOf(contactInList), contact);
 				addressBookObject.setContactList(contactList);
 				addressBookMap.put(ab_name, addressBookObject);
@@ -701,7 +701,7 @@ public class AddressBookMain {
 	public boolean hasContact(String ab_name, int contact_id, int ab_id, String firstName, String lastName, String phoneNumber) {
 		AddressBook addressBookObject = AddressBookMain.addressBookMap.get(ab_name);
 		ArrayList<Contact> contactList = addressBookObject.getContactList();
-		Contact contact = new Contact(contact_id, ab_id, firstName, lastName, phoneNumber);
+		Contact contact = new Contact(contact_id, ab_id, ab_name, firstName, lastName, phoneNumber);
 		return addressBookHasContact(contactList, contact);
 	}
 
@@ -822,13 +822,12 @@ public class AddressBookMain {
 		return true;
 	}
 
-	public int postContactToJsonServer(int contact_id, int ab_id, String first_name, String last_name, String phone) throws JsonServerException{
-		Contact contact = new Contact(contact_id, 1, "Ganesh", "Sundar", "2222333312");
+	public int postContactToJsonServer(int contact_id, int ab_id, String ab_name, String first_name, String last_name, String phone) throws JsonServerException{
 		if(RestAssured.get("/contacts/" + contact_id).getStatusCode() != 404)
 			throw new JsonServerException("The contact you are trying to post already exists in json server");
 		Response response = RestAssured.given().contentType(ContentType.JSON)
 					.accept(ContentType.JSON)
-					.body("{\"id\": "+ contact_id +", \"abid\": \""+ ab_id +"\", \"firstname\": \""+ first_name +"\", \"lastname\": \""+ last_name +"\", \"phone\": \""+ phone +"\"}")
+					.body("{\"id\": "+ contact_id +", \"abid\": \""+ ab_id +"\", \"abname\": \""+ ab_name +"\", \"firstname\": \""+ first_name +"\", \"lastname\": \""+ last_name +"\", \"phone\": \""+ phone +"\"}")
 					.when()
 					.post("/contacts/create");
 		return response.getStatusCode();
@@ -840,8 +839,16 @@ public class AddressBookMain {
 			JSONArray jsonArray = new JSONArray(contactList.asString());
 	        for(int i=0; i<jsonArray.length(); i++) {
 	            JSONObject jsonObject = jsonArray.getJSONObject(i);
-	            Contact contact = new Contact(jsonObject.getInt("id"), jsonObject.getInt("abid"),
+	            Contact contact = new Contact(jsonObject.getInt("id"), jsonObject.getInt("abid"), jsonObject.getString("abname"),
 						jsonObject.getString("firstname"), jsonObject.getString("lastname"), jsonObject.getString("phone"));
+	            String ab_name = jsonObject.getString("abname");
+	            if(addressBookMap.containsKey(ab_name))
+	            	addressBookMap.get(ab_name).contactList.add(contact);
+	            else {
+	    			AddressBook addressBook = new AddressBook(ab_name);	
+		            addressBook.contactList.add(contact);
+		            addressBookMap.put(ab_name, addressBook);
+	            }
 	        }
 	        System.out.println(contactList.asString());
             return contactList.statusCode();
@@ -849,5 +856,16 @@ public class AddressBookMain {
 			System.out.println(e.getMessage());
 			return 0;
 		}
+	}
+
+	public boolean postMultipleContactsToJsonServer(ArrayList<Contact> contactList) {
+		try {
+			for(Contact contact : contactList) {
+				postContactToJsonServer(contact.getContact_id(), contact.getAb_id(), contact.getAb_name(), contact.getFirstName(), contact.getLastName(), contact.getPhoneNumber());
+			}
+		} catch (JsonServerException e) {
+			System.out.println(e.getMessage());
+		}
+		return true;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.Objects;
 public class Contact implements java.io.Serializable{
 	private int contact_id;
 	private int ab_id;
+	private String ab_name;
 	private String firstName, lastName, phoneNumber, email;
 	private String address, city, state;
 	private int zip;
@@ -24,9 +25,10 @@ public class Contact implements java.io.Serializable{
 		this.type = type;
 	}
 	
-	public Contact(int contact_id, int ab_id, String firstName, String lastName, String phoneNumber) {
+	public Contact(int contact_id, int ab_id, String ab_name, String firstName, String lastName, String phoneNumber) {
 		this.contact_id = contact_id;
 		this.ab_id = ab_id;
+		this.setAb_name(ab_name);
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phoneNumber = phoneNumber;
@@ -140,5 +142,13 @@ public class Contact implements java.io.Serializable{
 
 	public void setAb_id(int ab_id) {
 		this.ab_id = ab_id;
+	}
+
+	public String getAb_name() {
+		return ab_name;
+	}
+
+	public void setAb_name(String ab_name) {
+		this.ab_name = ab_name;
 	}
 }

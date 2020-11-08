@@ -161,7 +161,7 @@ public class AddressBookServiceTest {
 	@Test
 	public void givenContact_WhenAddedToJsonServer_ShouldReturnCorrectStatusCode() {
 		try {
-			int statusCode = addressBookMain.postContactToJsonServer(12, 1, "Murali", "Sundar", "2222333312");
+			int statusCode = addressBookMain.postContactToJsonServer(12, 1, "AB1", "Murali", "Sundar", "2222333312");
 			Assert.assertEquals(201, statusCode);
 		} catch (JsonServerException e) {
 			System.out.println(e.getMessage());
@@ -172,5 +172,14 @@ public class AddressBookServiceTest {
 	public void WhenRecordsRetrievedFromJsonServer_ShouldReturnCorrectStatusCode() {
 		int statusCode = addressBookMain.getContactFromJsonServer();
 		Assert.assertEquals(200, statusCode);
+	}
+	
+	@Test 
+	public void givenContact_WhenAdditionExecutedSuccessfully_ShouldReturnTrue() {
+		ArrayList<Contact> contactList = new ArrayList<>(Arrays.asList(new Contact(51, 1, "AB1", "Mahesh", "King", "2222334531"),
+																	new Contact(52, 1, "AB1", "Lorge", "Hans", "4444332234"),
+																	new Contact(53, 1, "AB1", "George", "Hamilton", "1155243251")));
+		boolean result = addressBookMain.postMultipleContactsToJsonServer(contactList);
+		Assert.assertTrue(result);
 	}
 }

@@ -7,6 +7,10 @@ public class AddressBook implements java.io.Serializable{
 		addressBookName = "";
 		contactList = new ArrayList<Contact>();
 	}
+	public AddressBook(String addressBookName) {
+		this.addressBookName = addressBookName;
+		contactList = new ArrayList<Contact>();
+	}
 	public String getAddressBookName() {
 		return addressBookName;
 	}
