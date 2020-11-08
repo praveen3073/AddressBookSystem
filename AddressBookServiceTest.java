@@ -195,4 +195,14 @@ public class AddressBookServiceTest {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	@Test
+	public void givenContactId_WhenDeletedInJsonServer_ShouldReturnCorrectStatusCode() {
+		try {
+			int statusCode = addressBookMain.deleteContactFromJsonServer(53);
+			Assert.assertEquals(200, statusCode);
+		} catch (JsonServerException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 }

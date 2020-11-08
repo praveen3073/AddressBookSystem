@@ -883,4 +883,14 @@ public class AddressBookMain {
         else
             throw new JsonServerException("Contact ID " + contact_id + " doesn't exist in Json server");
 	}
+
+	public int deleteContactFromJsonServer(int contact_id) throws JsonServerException {
+		Response response = RestAssured.get("/contacts/" + contact_id);
+        if (response.getStatusCode() == 200) {
+            Response deleteResponse = RestAssured.delete("/contacts/delete/" + contact_id);
+            getContactFromJsonServer();					// Syncing with local AddressBook Map
+            return deleteResponse.statusCode();
+        } else
+            throw new JsonServerException("Contact ID " + contact_id + " not found in Json Server");
+	}
 }

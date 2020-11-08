@@ -4,6 +4,7 @@
     {
       "contact_id": 1,
       "ab_id": 1,
+      "ab_name": "AB1",
       "firstName": "Kanishk",
       "lastName": "Mathur",
       "phoneNumber": "2222221232",
