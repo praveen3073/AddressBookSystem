@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -181,5 +182,17 @@ public class AddressBookServiceTest {
 																	new Contact(53, 1, "AB1", "George", "Hamilton", "1155243251")));
 		boolean result = addressBookMain.postMultipleContactsToJsonServer(contactList);
 		Assert.assertTrue(result);
+	}
+	
+	@Test
+	public void givenContact_WhenPut_ShouldReturnStatusCode200() {
+		Response updateContactResponse;
+		try {
+			updateContactResponse = addressBookMain.updateContactInJsonServer(51, 1, "AB1", "Mahesh", "King", "1111111111");
+	        int statusCode = updateContactResponse.getStatusCode();
+	        Assert.assertEquals(200, statusCode);
+		} catch (JsonServerException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }

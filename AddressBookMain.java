@@ -868,4 +868,19 @@ public class AddressBookMain {
 		}
 		return true;
 	}
+
+	public Response updateContactInJsonServer(int contact_id, int ab_id, String ab_name, String first_name, String last_name, String phone) throws JsonServerException {
+		Response response = RestAssured.get("/contacts/" + contact_id);
+        if (response.getStatusCode() == 200) {
+            Response updateResponse =  RestAssured.given().contentType(ContentType.JSON)
+                    .accept(ContentType.JSON)
+                    .body("{\"abid\": \""+ ab_id +"\", \"abname\": \""+ ab_name +"\", \"firstname\": \""+ first_name +"\", \"lastname\": \""+ last_name +"\", \"phone\": \""+ phone +"\"}")
+                    .when()
+                    .put("/contacts/update/" + contact_id);
+            getContactFromJsonServer();					// Syncing with local AddressBook Map
+            return updateResponse;
+        }
+        else
+            throw new JsonServerException("Contact ID " + contact_id + " doesn't exist in Json server");
+	}
 }
